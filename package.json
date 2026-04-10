@@ -4,7 +4,13 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "migration:generate": "sequelize-cli migration:generate --name",
+    "seed:generate": "sequelize-cli seed:generate --name",
+    "migrate": "sequelize-cli db:migrate",
+    "seed:all": "sequelize-cli db:seed:all",
+    "seed": "sequelize-cli db:seed --seed",
+    "rollback": "sequelize-cli db:migrate:undo"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +22,9 @@
     "express": "^5.1.0",
     "handlebars": "^4.7.9",
     "http-status-codes": "^2.3.0",
+    "mysql2": "^3.22.0",
     "nodemailer": "^8.0.5",
+    "sequelize": "^6.37.8",
     "uuid": "^11.1.0",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0",
@@ -31,6 +39,7 @@
     "eslint": "^9.28.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "nodemon": "^3.1.10",
+    "sequelize-cli": "^6.6.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }

@@ -9,9 +9,9 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
     declare fullName: string;
     declare email: string;
     declare password: string;
-    declare created_at: CreationOptional<Date>;
-    declare updated_at: CreationOptional<Date>;
-    declare deleted_at: CreationOptional<Date | null>;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+    declare deletedAt: CreationOptional<Date | null>;
 
     declare roles?: NonAttribute<Role[]>;
     declare getRoles: BelongsToManyGetAssociationsMixin<Role>;
@@ -42,7 +42,7 @@ User.init({
         type: DataTypes.STRING(100), 
         unique: {
             name: 'unique_email',
-            msg: 'This email id is already taken'
+            msg: 'User has already registered'
         },
         validate: {
             isEmail: {
@@ -65,17 +65,17 @@ User.init({
         allowNull: false,
     },
 
-    created_at: {
+    createdAt: {
         type: DataTypes.DATE,
         allowNull: false
     },
 
-    updated_at: {
+    updatedAt: {
         type: DataTypes.DATE,
         allowNull: false
     },
 
-    deleted_at: {
+    deletedAt: {
         type: DataTypes.DATE,
         defaultValue: null,
         allowNull: true
@@ -83,7 +83,7 @@ User.init({
 }, {
     tableName: 'users',
     underscored: true,
-    timestamps: false,
+    timestamps: true,
     sequelize,
     hooks: {
         beforeSave: async (user: User) => {

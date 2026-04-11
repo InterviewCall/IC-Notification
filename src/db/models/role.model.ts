@@ -6,9 +6,9 @@ import User from './user.model';
 class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
     declare id: number;
     declare name: string;
-    declare created_at: CreationOptional<Date>;
-    declare updated_at: CreationOptional<Date>;
-    declare deleted_at: CreationOptional<Date | null>;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+    declare deletedAt: CreationOptional<Date | null>;
 
     declare users?: NonAttribute<User[]>;
     declare getUsers: BelongsToManyGetAssociationsMixin<User>;
@@ -35,17 +35,17 @@ Role.init({
         allowNull: false
     },
 
-    created_at: {
+    createdAt: {
         type: DataTypes.DATE,
         allowNull: false
     },
 
-    updated_at: {
+    updatedAt: {
         type: DataTypes.DATE,
         allowNull: false
     },
     
-    deleted_at: {
+    deletedAt: {
         type: DataTypes.DATE,
         defaultValue: null,
         allowNull: true
@@ -53,7 +53,7 @@ Role.init({
 }, {
     tableName: 'roles',
     underscored: true,
-    timestamps: false,
+    timestamps: true,
     sequelize
 });
 

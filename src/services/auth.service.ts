@@ -22,7 +22,7 @@ class AuthService {
     }
 
     async signup(data: SignupUserDto): Promise<string> {
-        const role = await this.roleRepository.findOne({ name: Roles.OPERATION_ADMIN, deleted_at: null });
+        const role = await this.roleRepository.findOne({ name: Roles.OPERATION_ADMIN, deletedAt: null });
         if(!role) {
             throw new NotFoundError(`Role with name ${Roles.OPERATION_ADMIN} is not found`);
         }
@@ -55,7 +55,7 @@ class AuthService {
     async signin(data: SigninUserDto): Promise<string> {
         const user = await this.userRepository.findOne({ email: data.email, deletedAt: null });
         if(!user) {
-            throw new UnauthorizedError('User is not present');
+            throw new UnauthorizedError('User is not Registered');
         }
 
         const isPasswordMatched = await auth.checkPassword(data.password, user.password);

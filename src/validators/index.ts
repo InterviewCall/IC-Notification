@@ -1,6 +1,6 @@
 import { NextFunction,Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { AnyZodObject } from 'zod';
+import { AnyZodObject, ZodError } from 'zod';
 
 import logger from '../configs/logger.config';
 
@@ -15,13 +15,17 @@ export const validateRequestBody = (schema: AnyZodObject) => async (req: Request
         await schema.parseAsync(req.body);
         next();
     } catch (error) {
-        //If validation fails 
-        logger.error('Invalid Request Structure', { recievedStructure: req.body });
-        res.status(StatusCodes.BAD_REQUEST).json({
-            success: false,
-            message: 'Invalid Request Body',
-            error
-        });
+        logger.error('Invalid Request Structure', { recievedStructure: req.body, error });
+        if(error instanceof ZodError) {
+            res.status(StatusCodes.BAD_REQUEST).json({
+                success: false,
+                message: error.issues[0]?.message || 'Invalid Request Body',
+                data: {},
+                error: error.issues
+            });
+        } 
+        
+        next(error);
     }
 };
 

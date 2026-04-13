@@ -6,7 +6,7 @@ type ServerConfig = {
     PORT: number
     SALT :number
     JWT_SECRET : string
-    JWT_EXPRIRES_IN : string
+    JWT_EXPIRES_IN : string
 }
 
 type DBConfig = {
@@ -19,13 +19,13 @@ type DBConfig = {
 export const dbConfig: DBConfig = {
     DB_HOST: process.env.DB_HOST || 'localhost',
     DB_USER: process.env.DB_USER || 'root',
-    DB_PASSWORD: process.env.DB_PASSWORD || '1748arijiT#',
-    DB_NAME: process.env.DB_NAME || 'ic_notification'
+    DB_PASSWORD: process.env.DB_PASSWORD || 'Ujjwal000',
+    DB_NAME: process.env.DB_NAME || 'icuserdb'
 };
 
 export const serverConfig: ServerConfig =  {
-    PORT: Number(process.env.PORT) || 3000,
+    PORT: Number(process.env.PORT) || 5002,
     SALT: Number(process.env.SALT),
     JWT_SECRET: String(process.env.JWT_SECRET),
-    JWT_EXPRIRES_IN: String(process.env.JWT_EXPRIRES_IN) 
+    JWT_EXPIRES_IN: String(process.env.JWT_EXPIRES_IN) 
 };

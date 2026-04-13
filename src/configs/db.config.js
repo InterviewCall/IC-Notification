@@ -5,8 +5,8 @@ dotenv.config();
 const config = {
     development: {
         username: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || '1748arijiT#',
-        database: process.env.DB_NAME || 'workr',
+        password: process.env.DB_PASSWORD || 'Ujjwal000',
+        database: process.env.DB_NAME || 'icuserdb',
         host: process.env.DB_HOST || 'localhost',
         dialect: 'mysql',
         port: process.env.DB_PORT || 3306

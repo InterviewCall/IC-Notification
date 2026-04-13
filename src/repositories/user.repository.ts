@@ -12,6 +12,19 @@ class UserRepository extends BaseRepository<User> {
         const record = await this.model.create(data, { transaction });
         return record;
     }
+
+    async findById (id: number): Promise<User | null> {
+        const user = await this.model.findByPk(id, {
+            attributes: ['id', 'fullName','email'],
+            include: [
+                {
+                    association: User.associations.roles,
+                    attributes: ['id','name']
+                }
+            ]
+        });
+        return user;
+    }
 }
 
 export default UserRepository;

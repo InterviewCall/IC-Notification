@@ -23,6 +23,14 @@ class UserRepository extends BaseRepository<User> {
         return record;
     }
 
+    async findAllUsers(){
+        const records = await this.model.findAll({
+            where: { deletedAt: null },
+            attributes: ['id', 'email', 'fullName'],
+        });
+        return records;
+    }
+
     async create(data: CreationAttributes<User>, transaction?: Transaction): Promise<User> {
         const record = await this.model.create(data, { transaction });
         return record;

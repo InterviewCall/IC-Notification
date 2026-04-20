@@ -21,8 +21,8 @@ class UserService {
     }
 
     async getAllUsers({userId}: {userId: number}) {
-        await authService.isAuthorized([Roles.ADMIN], userId);
-        const users = await this.userRepository.findAllWhere({deletedAt: null});
+        await authService.isAuthorized([Roles.OPERATION_ADMIN], userId);
+        const users = await this.userRepository.findAllUsers();
         return users;
     }
 

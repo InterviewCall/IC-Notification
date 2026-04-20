@@ -2,7 +2,8 @@ import { NextFunction,  Response } from 'express';
 
 import logger from '../configs/logger.config';
 import UserService from '../services/user.service';
-import { AuthRequest, UserTokenPayload } from '../types/authRequest.types';
+import { AuthRequest } from '../types/authRequest.types';
+import { UserTokenPayload } from '../types/usertokenpayload.type';
 import { UnauthorizedError } from '../utils/errors/app.error';
 
 

@@ -1,10 +1,9 @@
 import { Request } from 'express';
 
-export type UserTokenPayload = {
-    id: number,
-    email: string,
-}
+import { UserTokenPayload } from './usertokenpayload.type';
+
+
 
 export type AuthRequest = {
-    user: UserTokenPayload;
+    user?: UserTokenPayload;
 } & Request;

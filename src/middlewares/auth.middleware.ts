@@ -1,14 +1,21 @@
 import { NextFunction,  Response } from 'express';
 
 import logger from '../configs/logger.config';
-import UserService from '../services/user.service';
+import RoleRepository from '../repositories/role.repository';
+import UserRepository from '../repositories/user.repository';
+import UserRoleRepository from '../repositories/userRole.repository';
+import AuthService from '../services/auth.service';
 import { AuthRequest } from '../types/authRequest.type';
 import { UserTokenPayload } from '../types/usertokenpayload.type';
 import { UnauthorizedError } from '../utils/errors/app.error';
 
 
+const userRepository = new UserRepository();
+const roleRepository = new RoleRepository();
+const userRoleRepository = new UserRoleRepository();
 
-const userService = new UserService();
+const authService = new AuthService(userRepository, roleRepository, userRoleRepository);
+
 
 const authenticationMiddleware = (req : AuthRequest, _res: Response, next: NextFunction)=>{
     const authHeader = req.headers.authorization;
@@ -17,7 +24,7 @@ const authenticationMiddleware = (req : AuthRequest, _res: Response, next: NextF
         throw new UnauthorizedError('No token provided');
     }
 
-    const decoded  = userService.isAuthenticated(authHeader);
+    const decoded  = authService.isAuthenticated(authHeader);
     req.user = decoded as UserTokenPayload;
     next();
 };

@@ -8,9 +8,39 @@ class UserRepository extends BaseRepository<User> {
         super(User);
     }
 
+    async findById(id: number) {
+        const record = await this.model.findOne({
+            where: { id, deletedAt: null },
+            attributes: ['id', 'email', 'fullName'],
+            include: [
+                {
+                    association: User.associations.roles,
+                    attributes: ['name'],
+
+                } 
+            ]
+        });
+        return record;
+    }
+
     async create(data: CreationAttributes<User>, transaction?: Transaction): Promise<User> {
         const record = await this.model.create(data, { transaction });
         return record;
+    }
+
+    async getUserRoles(userId: number) {
+        const userRoles = await this.model.findOne({
+            where: { id: userId },
+            include: [
+                {
+                    association: User.associations.roles,
+                    attributes: ['name'],
+
+                } 
+            ]
+        });
+
+        return userRoles ;
     }
 }
 

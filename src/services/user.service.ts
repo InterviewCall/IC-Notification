@@ -1,29 +1,65 @@
-import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import { Roles } from '../enums/role.enum';
+import RoleRepository from '../repositories/role.repository';
+import UserRepository from '../repositories/user.repository';
+import UserRoleRepository from '../repositories/userRole.repository';
+import { BadRequestError, ConflictError } from '../utils/errors/app.error';
+import { UpdateProfileDto } from '../validators/user.validator';
+import AuthService from './auth.service';
 
-import logger from '../configs/logger.config';
-import authUtils from '../utils/auth/auth';
-import { UnauthorizedError } from '../utils/errors/app.error';
+
+const userRepository = new UserRepository();
+const roleRepository = new RoleRepository();
+const userRoleRepository = new UserRoleRepository();
+
+const authService = new AuthService(userRepository, roleRepository, userRoleRepository);
 
 class UserService {
-    
-    isAuthenticated(authToken: string){
-        try {
-            const decoded = authUtils.verifyToken(authToken as string);
-            return decoded;
-            
-        } catch (error) {
-            if (error instanceof TokenExpiredError) {
-                return new UnauthorizedError('Session expired. Please login again.');
-            } else if (error instanceof JsonWebTokenError) {
-                logger.error('Invalid token');
-                throw new UnauthorizedError('Invalid token');
-            } else {
-                logger.error('Verification of token failed');
-                throw new UnauthorizedError('Verification of token failed');
-            }
-      
-        }
+    private userRepository: UserRepository ;
+
+    constructor( userRepository: UserRepository ){
+        this.userRepository = userRepository;
     }
+
+    async getAllUsers({userId}: {userId: number}) {
+        await authService.isAuthorized([Roles.ADMIN], userId);
+        const users = await this.userRepository.findAllWhere({deletedAt: null});
+        return users;
+    }
+
+    async getUserDetails(userId: number) {
+        const user = await this.userRepository.findById(userId);
+
+        if (!user) { 
+            throw new BadRequestError('User not found');
+        }
+
+        return user;
+    }
+
+    async updateUserProfile(userId: number, data: UpdateProfileDto) {
+        const existingUser = await this.userRepository.findById(userId);
+
+        if (!existingUser) {
+            throw new BadRequestError('User not found');
+        }
+
+        if (data.email && data.email !== existingUser.email) {
+            const emailExists = await this.userRepository.findOne({ email: data.email });
+            if (emailExists) {
+                throw new ConflictError('Email already in use');
+            }
+        }
+
+        const updatedUser = await this.userRepository.updateById(userId, data);
+
+        return {
+            id: updatedUser.id,
+            fullName: updatedUser.fullName,
+            email: updatedUser.email
+        };
+    }
+    
+    
 }
 
 export default UserService;

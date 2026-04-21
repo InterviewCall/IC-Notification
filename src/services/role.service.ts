@@ -1,9 +1,11 @@
+import { UniqueConstraintError } from 'sequelize';
+
 import { CreateRoleDto, DeleteRoleDto, GetAllRolesDto, UpdateRoleDto } from '../dtos/role.dto';
 import { Roles } from '../enums/role.enum';
 import RoleRepository from '../repositories/role.repository';
 import UserRepository from '../repositories/user.repository';
 import UserRoleRepository from '../repositories/userRole.repository';
-import { ConflictError, NotFoundError } from '../utils/errors/app.error';
+import { ConflictError } from '../utils/errors/app.error';
 import AuthService from './auth.service';
 
 const roleRepository = new RoleRepository();
@@ -26,42 +28,29 @@ class RoleService {
     }
 
     async createRole(data: CreateRoleDto) {
-        await authService.isAuthorized([Roles.ADMIN], data.userId);
+        try {
+            await authService.isAuthorized([Roles.ADMIN], data.userId);
 
-        const existingRole = await this.roleRepository.findOne({ name: data.name, deletedAt: null });
-        if (existingRole) {
-            throw new ConflictError('Role already exists');
+            const role = await this.roleRepository.create({ name: data.name });
+            return role;
+        } catch (error) {
+            if ( error instanceof UniqueConstraintError ){
+                throw new ConflictError('Role with this name already exists');
+            } else {
+                throw error ;
+            }
         }
-
-        const role = await this.roleRepository.create({ name: data.name });
-        return role;
     }
 
     async deleteRole(data: DeleteRoleDto) {
         await authService.isAuthorized([Roles.ADMIN], data.userId);
 
-        const role = await this.roleRepository.findById(data.id);
-
-        if (!role || role.deletedAt !== null) {
-            throw new NotFoundError('Role not found');
-        }
-
-        await this.roleRepository.updateById(data.id, { deletedAt: new Date() });
+        await this.roleRepository.delete({ id: data.id });
         return true;
     }
 
     async updateRole(data: UpdateRoleDto) {
         await authService.isAuthorized([Roles.ADMIN], data.userId);
-
-        const role = await this.roleRepository.findById(data.id);
-        if (!role) {
-            throw new NotFoundError('Role not found');
-        }
-
-        const existingRole = await this.roleRepository.findOne({ name: data.name, deletedAt: null });
-        if (existingRole && existingRole.id !== data.id) {
-            throw new ConflictError('Role name already exists');
-        }
 
         const updatedRole = await this.roleRepository.updateById(data.id, { name: data.name });
         return updatedRole;

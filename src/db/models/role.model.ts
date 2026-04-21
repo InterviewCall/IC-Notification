@@ -32,6 +32,10 @@ Role.init({
                 msg: 'Role name is required'
             }
         },
+        unique:{
+            name: 'unique_role_name',
+            msg: 'Role with this name already exists'
+        },
         allowNull: false
     },
 

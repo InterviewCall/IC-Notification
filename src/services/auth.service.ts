@@ -1,3 +1,4 @@
+import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { UniqueConstraintError, ValidationError } from 'sequelize';
 
 import logger from '../configs/logger.config';
@@ -8,8 +9,8 @@ import RoleRepository from '../repositories/role.repository';
 import UserRepository from '../repositories/user.repository';
 import UserRoleRepository from '../repositories/userRole.repository';
 import auth from '../utils/auth/auth';
+import authUtils from '../utils/auth/auth';
 import { BadRequestError, ConflictError, InternalServerError, NotFoundError, UnauthorizedError } from '../utils/errors/app.error';
-
 class AuthService {
     private userRepository: UserRepository;
     private roleRepository: RoleRepository;
@@ -44,7 +45,6 @@ class AuthService {
             }
 
             if(error instanceof ValidationError) {
-                console.log('this one');
                 throw new BadRequestError(error.errors[0].message);
             }
 
@@ -65,6 +65,37 @@ class AuthService {
 
         const token = auth.createToken({ id: user.id, email: user.email });
         return token;
+    }
+
+    isAuthenticated(authToken: string){
+        try {
+            const decoded = authUtils.verifyToken(authToken as string);
+            return decoded;
+                
+        } catch (error) {
+            if (error instanceof TokenExpiredError) {
+                return new UnauthorizedError('Session expired. Please login again.');
+            } else if (error instanceof JsonWebTokenError) {
+                logger.error('Invalid token');
+                throw new UnauthorizedError('Invalid token');
+            } else {
+                logger.error('Verification of token failed');
+                throw new UnauthorizedError('Verification of token failed');
+            }
+          
+        }
+    }
+    
+    async isAuthorized(allowedRoles: string[], userId: number) {
+        const userRoles =await this.userRepository.getUserRoles(userId);
+    
+        for (const role of allowedRoles) {
+            if (userRoles?.roles?.some((userRole) => userRole.name === role)) {
+                return true;
+            }
+        }
+    
+        throw new UnauthorizedError('You do not have permission to perform this action');
     }
 }
 

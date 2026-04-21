@@ -4,7 +4,7 @@ import sequelize from './sequelize';
 import User from './user.model';
 
 class Role extends Model<InferAttributes<Role>, InferCreationAttributes<Role>> {
-    declare id: number;
+    declare id: CreationOptional<number>;
     declare name: string;
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;

@@ -3,7 +3,7 @@ import { Roles } from '../enums/role.enum';
 import RoleRepository from '../repositories/role.repository';
 import UserRepository from '../repositories/user.repository';
 import UserRoleRepository from '../repositories/userRole.repository';
-import { BadRequestError, ConflictError } from '../utils/errors/app.error';
+import { BadRequestError } from '../utils/errors/app.error';
 import AuthService from './auth.service';
 
 
@@ -41,13 +41,6 @@ class UserService {
 
         if (!existingUser) {
             throw new BadRequestError('User not found');
-        }
-
-        if (data.email && data.email !== existingUser.email) {
-            const emailExists = await this.userRepository.findOne({ email: data.email });
-            if (emailExists) {
-                throw new ConflictError('Email already in use');
-            }
         }
 
         const updatedUser = await this.userRepository.updateById(data.userId, data);

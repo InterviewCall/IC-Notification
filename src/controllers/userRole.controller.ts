@@ -1,16 +1,12 @@
 import { NextFunction, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import RoleRepository from '../repositories/role.repository';
-import UserRepository from '../repositories/user.repository';
 import UserRoleRepository from '../repositories/userRole.repository';
 import UserRoleService from '../services/userRole.service';
 import { AuthRequest } from '../types/authRequest.type';
 
-const userRepository = new UserRepository();
-const roleRepository = new RoleRepository();
 const userRoleRepository = new UserRoleRepository();
-const userRoleService = new UserRoleService(userRepository, roleRepository, userRoleRepository);
+const userRoleService = new UserRoleService(userRoleRepository);
 
 async function getUserRolesHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {

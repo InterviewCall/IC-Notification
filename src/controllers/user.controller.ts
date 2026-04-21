@@ -12,7 +12,7 @@ const userService = new UserService(userRepository);
 async function userDetailsHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
-        const userDetails = await userService.getUserDetails(userId!);
+        const userDetails = await userService.getUserDetails({userId: userId!});
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'User details retrieved successfully',
@@ -43,7 +43,7 @@ async function updateUserHandler(req: AuthRequest, res: Response, next: NextFunc
     try {
         const userId = req.user?.id;
         const validatedData = updateProfileSchema.parse(req.body);
-        const updatedUser = await userService.updateUserProfile(userId!, validatedData);
+        const updatedUser = await userService.updateUserProfile({ ...validatedData, userId: userId! });
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'User profile updated successfully',

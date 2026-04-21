@@ -1,9 +1,9 @@
+import { GetAllUsersDto, GetUserDetailsDto, UpdateProfileDto } from '../dtos/user.dto';
 import { Roles } from '../enums/role.enum';
 import RoleRepository from '../repositories/role.repository';
 import UserRepository from '../repositories/user.repository';
 import UserRoleRepository from '../repositories/userRole.repository';
 import { BadRequestError, ConflictError } from '../utils/errors/app.error';
-import { UpdateProfileDto } from '../validators/user.validator';
 import AuthService from './auth.service';
 
 
@@ -20,14 +20,14 @@ class UserService {
         this.userRepository = userRepository;
     }
 
-    async getAllUsers({userId}: {userId: number}) {
-        await authService.isAuthorized([Roles.OPERATION_ADMIN], userId);
+    async getAllUsers(data: GetAllUsersDto) {
+        await authService.isAuthorized([Roles.OPERATION_ADMIN], data.userId);
         const users = await this.userRepository.findAllUsers();
         return users;
     }
 
-    async getUserDetails(userId: number) {
-        const user = await this.userRepository.findById(userId);
+    async getUserDetails(data : GetUserDetailsDto) {
+        const user = await this.userRepository.findById(data.userId);
 
         if (!user) { 
             throw new BadRequestError('User not found');
@@ -36,8 +36,8 @@ class UserService {
         return user;
     }
 
-    async updateUserProfile(userId: number, data: UpdateProfileDto) {
-        const existingUser = await this.userRepository.findById(userId);
+    async updateUserProfile( data: UpdateProfileDto) {
+        const existingUser = await this.userRepository.findById(data.userId);
 
         if (!existingUser) {
             throw new BadRequestError('User not found');
@@ -50,7 +50,7 @@ class UserService {
             }
         }
 
-        const updatedUser = await this.userRepository.updateById(userId, data);
+        const updatedUser = await this.userRepository.updateById(data.userId, data);
 
         return {
             id: updatedUser.id,

@@ -12,5 +12,3 @@ export const updateProfileSchema = z.object({
 }).refine((data) => data.fullName || data.email, {
     message: 'At least one of fullName or email is required'
 });
-
-export type UpdateProfileDto = z.infer<typeof updateProfileSchema>;

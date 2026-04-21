@@ -45,7 +45,6 @@ class AuthService {
             }
 
             if(error instanceof ValidationError) {
-                console.log('this one');
                 throw new BadRequestError(error.errors[0].message);
             }
 
@@ -89,10 +88,8 @@ class AuthService {
     
     async isAuthorized(allowedRoles: string[], userId: number) {
         const userRoles =await this.userRepository.getUserRoles(userId);
-        console.log(userRoles?.roles?.map((role) => role.name));
     
         for (const role of allowedRoles) {
-            console.log(role);
             if (userRoles?.roles?.some((userRole) => userRole.name === role)) {
                 return true;
             }

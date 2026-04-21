@@ -24,6 +24,14 @@ abstract class BaseRepository<M extends Model> {
         return record;
     }
 
+    async findAllWhere(whereOptions: WhereOptions<InferAttributes<M>>): Promise<M[]> {
+        const records = await this.model.findAll({
+            where: whereOptions
+        });
+
+        return records;
+    }
+
     async findOne(whereOptions: WhereOptions<InferAttributes<M>>): Promise<M | null> {
         const record = await this.model.findOne({
             where: whereOptions

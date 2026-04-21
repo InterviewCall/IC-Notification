@@ -21,7 +21,7 @@ class UserService {
     }
 
     async getAllUsers(data: GetAllUsersDto) {
-        await authService.isAuthorized([Roles.OPERATION_ADMIN], data.userId);
+        await authService.isAuthorized([Roles.ADMIN], data.userId);
         const users = await this.userRepository.findAllUsers();
         return users;
     }

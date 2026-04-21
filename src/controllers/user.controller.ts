@@ -1,10 +1,10 @@
 import { NextFunction, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
+import { UpdateProfileDto } from '../dtos/user.dto';
 import UserRepository from '../repositories/user.repository';
 import UserService from '../services/user.service';
 import { AuthRequest } from '../types/authRequest.type';
-import { updateProfileSchema } from '../validators/user.validator';
 
 const userRepository = new UserRepository();
 const userService = new UserService(userRepository);
@@ -42,7 +42,7 @@ async function allUsersHandler(req: AuthRequest, res: Response, next: NextFuncti
 async function updateUserHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
-        const validatedData = updateProfileSchema.parse(req.body);
+        const validatedData: UpdateProfileDto = (req.body);
         const updatedUser = await userService.updateUserProfile({ ...validatedData, userId: userId! });
         res.status(StatusCodes.OK).json({
             success: true,

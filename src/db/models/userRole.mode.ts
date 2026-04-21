@@ -1,4 +1,4 @@
-import { DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model } from 'sequelize';
+import { Association, DataTypes, ForeignKey, InferAttributes, InferCreationAttributes, Model, NonAttribute } from 'sequelize';
 
 import Role from './role.model';
 import sequelize from './sequelize';
@@ -7,6 +7,14 @@ import User from './user.model';
 class UserRole extends Model<InferAttributes<UserRole>, InferCreationAttributes<UserRole>> {
     declare userId: ForeignKey<User['id']>;
     declare roleId: ForeignKey<Role['id']>;
+
+    declare role?: NonAttribute<Role>;
+    declare user?: NonAttribute<User>;
+
+    static associations: {
+        user: Association<UserRole, User>;
+        role: Association<UserRole, Role>;
+    };
 }
 
 UserRole.init({

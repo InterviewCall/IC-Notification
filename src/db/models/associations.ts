@@ -15,3 +15,23 @@ Role.belongsToMany(User, {
     otherKey: 'userId',
     as: 'users'
 });
+
+UserRole.belongsTo(User, {
+    foreignKey: 'userId',
+    as: 'user'
+});
+
+UserRole.belongsTo(Role, {
+    foreignKey: 'roleId',
+    as: 'role'
+});
+
+User.hasMany(UserRole, {
+    foreignKey: 'userId',
+    as: 'userRoles'
+});
+
+Role.hasMany(UserRole, {
+    foreignKey: 'roleId',
+    as: 'roleUsers'
+});

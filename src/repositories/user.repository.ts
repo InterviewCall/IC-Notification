@@ -15,7 +15,7 @@ class UserRepository extends BaseRepository<User> {
             include: [
                 {
                     association: User.associations.roles,
-                    attributes: ['name'],
+                    attributes: ['name', 'id'],
 
                 } 
             ]

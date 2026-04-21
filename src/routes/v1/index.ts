@@ -4,6 +4,7 @@ import authRouter from './auth.route';
 import pingRouter from './ping.route';
 import roleRouter from './role.route';
 import userRouter from './user.route';
+import userRoleRouter from './userRole.route';
 
 const v1Router = express.Router();
 
@@ -14,5 +15,7 @@ v1Router.use('/auth', authRouter);
 v1Router.use('/users', userRouter);
 
 v1Router.use('/roles', roleRouter);
+
+v1Router.use('/user-roles', userRoleRouter);
 
 export default v1Router;

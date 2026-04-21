@@ -5,7 +5,7 @@ import express from 'express';
 import logger from './configs/logger.config';
 import { serverConfig } from './configs/server.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
-import { appErrorHandler, genericErrorHandler } from './middlewares/error.middleware';
+import { appErrorHandler, genericErrorHandler, sequelizeErrorHandler } from './middlewares/error.middleware';
 import apiRouter from './routes';
 
 const app = express();
@@ -17,6 +17,7 @@ app.use(attachCorrelationIdMiddleware);
 
 app.use('/api', apiRouter);
 
+app.use(sequelizeErrorHandler);
 app.use(appErrorHandler);
 app.use(genericErrorHandler);
 

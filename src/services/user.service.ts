@@ -37,12 +37,6 @@ class UserService {
     }
 
     async updateUserProfile( data: UpdateProfileDto) {
-        const existingUser = await this.userRepository.findById(data.userId);
-
-        if (!existingUser) {
-            throw new BadRequestError('User not found');
-        }
-
         const updatedUser = await this.userRepository.updateById(data.userId, data);
 
         return {

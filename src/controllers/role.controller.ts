@@ -11,7 +11,7 @@ const roleService = new RoleService(roleRepository);
 async function getRolesHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
-        
+
         const roles = await roleService.getAllRoles({ userId: userId! });
         res.status(StatusCodes.OK).json({
             success: true,
@@ -61,8 +61,8 @@ async function deleteRoleHandler(req: AuthRequest, res: Response, next: NextFunc
 async function updateRoleHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
-        const name = String(req.body.name);
-        const id = Number(req.params.id);
+
+        const { name, id } = (req.body);
 
         const role = await roleService.updateRole({ id, name, userId: userId! });
         res.status(StatusCodes.OK).json({

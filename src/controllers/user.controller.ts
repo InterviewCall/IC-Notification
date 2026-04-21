@@ -1,7 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { UpdateProfileDto } from '../dtos/user.dto';
 import UserRepository from '../repositories/user.repository';
 import UserService from '../services/user.service';
 import { AuthRequest } from '../types/authRequest.type';
@@ -12,6 +11,7 @@ const userService = new UserService(userRepository);
 async function userDetailsHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
+
         const userDetails = await userService.getUserDetails({userId: userId!});
         res.status(StatusCodes.OK).json({
             success: true,
@@ -27,6 +27,7 @@ async function userDetailsHandler(req: AuthRequest, res: Response, next: NextFun
 async function allUsersHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
+
         const users = await userService.getAllUsers({userId: userId!});
         res.status(StatusCodes.OK).json({
             success: true,
@@ -42,8 +43,9 @@ async function allUsersHandler(req: AuthRequest, res: Response, next: NextFuncti
 async function updateUserHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
-        const validatedData: UpdateProfileDto = (req.body);
-        const updatedUser = await userService.updateUserProfile({ ...validatedData, userId: userId! });
+        const { fullName, email } = (req.body);
+        
+        const updatedUser = await userService.updateUserProfile({ fullName, email, userId: userId! });
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'User profile updated successfully',

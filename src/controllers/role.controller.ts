@@ -1,7 +1,6 @@
 import { NextFunction, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { CreateRoleDto, UpdateRoleDto } from '../dtos/role.dto';
 import RoleRepository from '../repositories/role.repository';
 import RoleService from '../services/role.service';
 import { AuthRequest } from '../types/authRequest.type';
@@ -12,6 +11,7 @@ const roleService = new RoleService(roleRepository);
 async function getRolesHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
+        
         const roles = await roleService.getAllRoles({ userId: userId! });
         res.status(StatusCodes.OK).json({
             success: true,
@@ -27,8 +27,9 @@ async function getRolesHandler(req: AuthRequest, res: Response, next: NextFuncti
 async function createRoleHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
-        const validatedData: CreateRoleDto = (req.body);
-        const role = await roleService.createRole({ ...validatedData, userId: userId! });
+        const name = String(req.body.name);
+
+        const role = await roleService.createRole({ name, userId: userId! });
         res.status(StatusCodes.CREATED).json({
             success: true,
             message: 'Role created successfully',
@@ -44,6 +45,7 @@ async function deleteRoleHandler(req: AuthRequest, res: Response, next: NextFunc
     try {
         const userId = req.user?.id;
         const roleId = Number(req.params.id);
+
         const result = await roleService.deleteRole({ id: roleId, userId: userId! });
         res.status(StatusCodes.OK).json({
             success: true,
@@ -59,8 +61,10 @@ async function deleteRoleHandler(req: AuthRequest, res: Response, next: NextFunc
 async function updateRoleHandler(req: AuthRequest, res: Response, next: NextFunction) {
     try {
         const userId = req.user?.id;
-        const validatedData: UpdateRoleDto = (req.body);
-        const role = await roleService.updateRole({ ...validatedData, userId: userId! });
+        const name = String(req.body.name);
+        const id = Number(req.params.id);
+
+        const role = await roleService.updateRole({ id, name, userId: userId! });
         res.status(StatusCodes.OK).json({
             success: true,
             message: 'Role updated successfully',
